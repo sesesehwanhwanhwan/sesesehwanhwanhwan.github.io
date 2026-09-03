@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Enhancing Grasp Stability in Prosthetic Hands via Passive Finger Abduction/Adduction | Seihwan Jung</title>
+<meta name="description" content="A tendon-driven prosthetic hand with a passive abduction degree of freedom using dual torsion springs. Simulation sweep plus real-world grasping experiments, 89.8% win rate.">
+<link rel="canonical" href="https://sesesehwanhwanhwan.github.io/research-passive-abd-hand.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Passive ABD Prosthetic Hand — Seihwan Jung">
+<meta property="og:description" content="Passive abduction mechanism using dual torsion springs, validated with an 89.8% real-world grasp win rate.">
+<meta property="og:image" content="https://sesesehwanhwanhwan.github.io/media1/cad_render.jpg">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-name" href="index.html">Seihwan Jung</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li class="has-sub">
+        <a href="index.html#research" class="active">Projects</a>
+        <ul class="subnav">
+          <li><a href="research-passive-abd-hand.html">Enhancing Grasp Stability in Prosthetic Hands via Passive Finger Abduction/Adduction</a></li>
+          <li><a href="research-imu-teleop-arm.html">Wireless IMU Teleoperation of a Robotic Arm</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<header class="pagehead">
+  <div class="wrap">
+    <h1>Enhancing Grasp Stability in Prosthetic Hands via Passive Finger Abduction/Adduction</h1>
+    <p>
+      Design of a passive abduction mechanism using dual torsion springs and dual tendon
+      routing, and evaluation of grasp stability · Undergraduate Researcher, BioRobotics Laboratory (BRL), SNU
+    </p>
+  </div>
+</header>
+
+<div class="wrap article">
+
+  <section>
+    <h2>Overview</h2>
+    <div class="overview-split">
+      <div>
+        <p>
+          Commercially available prosthetic hands almost never provide an abduction/adduction
+          (ABD) degree of freedom — their four fingers move only in flexion and extension, so the
+          MCP joints are effectively 1-DOF. Prior human-hand studies report that unrestricted ABD
+          improves grasp size, grasp force and overall stability, which suggests the missing DOF
+          costs real grasping performance.
+        </p>
+        <p>
+          Adding a dedicated actuator per finger to control ABD directly was not an option —
+          the extra motors, wiring and weight are a hard constraint prosthetic hands can't
+          afford. So instead I made the ABD degree of freedom <b>fully passive</b>: two opposing
+          torsion springs return each finger to a neutral abduction angle while still letting it
+          splay out to conform to an object, adding compliance with zero additional actuation.
+        </p>
+      </div>
+      <figure class="figure overview-fig">
+        <img src="media1/prosthetic.png" alt="Overview of the passive ABD prosthetic hand concept">
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Hardware Design</h2>
+    <p>
+      The hand has four tendon-driven fingers and a fully actuated 2-DOF thumb. Each finger
+      carries a 2-DOF MCP joint (tendon-driven flexion/extension with a torsion-spring return,
+      plus the passive ABD axis) and a 1-DOF PIP joint. A dual-tendon routing scheme with a
+      constant moment arm drives flexion, while the springs handle extension and recentering.
+      At the same time, since a prosthetic hand must 
+      not let its fingers go loose under gravity or external loads, it is critical to understand 
+      the relationship between spring stiffness and ABD angle, and to select a spring that sits 
+      between adaptability and practical usability.
+    </p>
+
+    <div class="video-compare video-compare--top">
+      <figure class="figure figure--80">
+        <img src="media1/Hardware_design.png" alt="Hardware design overview of the prosthetic hand">
+      </figure>
+      <video src="media1/Demo.mp4" autoplay muted loop playsinline class="vid-80"></video>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="h2-sub-size">Selecting the Spring Stiffness</h2>
+    <div class="overview-split">
+      <div>
+        <p>
+          The one free parameter in a passive mechanism is the spring stiffness. Too soft and the
+          joint feels loose; too stiff and it stops conforming to the object at all. Because the
+          two springs oppose each other at a 25° preload, the restoration torque is
+          <i>τ = 2kθ</i> accordining to the simple equation below the table. The table on the right lists
+          the commercially available spring candidates.
+        </p>
+        <p>
+          I swept the restoration torque in a MuJoCo simulation across four object families —
+          disc, sphere, box and ellipsoid — with multiple sizes, masses and approach positions per
+          torque level (576 grasp runs per stiffness value). The resulting win rate against a
+          non-passive baseline traded off directly against joint tightness.
+        </p>
+      </div>
+      <figure class="figure overview-fig">
+        <img src="media1/candidate.png" alt="Candidate spring stiffness options considered">
+      </figure>
+    </div>
+
+    <h3 class="h3-h2-size">Simulation</h3>
+    <div class="video-compare">
+      <div class="video-quad">
+        <video src="media1/Disc.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+        <video src="media1/Sphere.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+        <video src="media1/ellipsoid.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+        <video src="media1/box.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+      </div>
+      <figure>
+        <img src="media1/sim_others.png" alt="Simulated passive win rate for disc, sphere, ellipsoid and box objects">
+      </figure>
+    </div>
+
+    <p>
+      While there are differences between individual objects, the overall trend clearly slopes downward to the right.
+      Also the selected operating point was <b>k = 1.08 Nmm/deg</b> — It sits at the knee of the trade-off
+      curve: using Min-Max normalization, the case (<b>k = 1.08 Nmm/deg</b>) recorded the highest score(<b>theta = 9.1 deg, success rate = 86.8%</b>), so I chose it for real environment experiments.
+    </p>
+
+    <figure class="figure figure--80">
+      <img src="media1/score.png" alt="Efficiency score across torque candidates">
+    </figure>
+
+    <p>
+      To make that trade-off precise, define <b>score = 𝐴𝑛𝑔𝑙𝑒_𝑛𝑜𝑟𝑚 + 
+        𝑠𝑢𝑐𝑐𝑒𝑠𝑠_𝑛𝑜𝑟𝑚</b> for each stiffness k candidates — 𝐴𝑛𝑔𝑙𝑒_𝑛𝑜𝑟𝑚  = (𝜃_𝑚𝑎𝑥  − |𝜃_𝑒𝑞 |)/(𝜃_𝑚𝑎𝑥  −  𝜃_𝑚𝑖𝑛 ), 
+        𝑠𝑢𝑐𝑐𝑒𝑠𝑠_𝑛𝑜𝑟𝑚  = (𝑠𝑢𝑐𝑐𝑒𝑠𝑠−  𝑠𝑢𝑐𝑐𝑒𝑠𝑠_𝑚𝑖𝑛)/(𝑠𝑢𝑐𝑐𝑒𝑠𝑠_𝑚𝑎𝑥  −  𝑠𝑢𝑐𝑐𝑒𝑠𝑠_𝑚𝑖𝑛 ) The stiffness k (1.08) scores highest,
+         and every other k scores lower.
+      So k=1.08 Nmm/deg is the single best trade in the entire sweep.
+    </p>
+  </section>
+
+  <section>
+    <h2>Real-World Validation</h2>
+
+    <p>
+      Simulation at the selected stiffness (k = 1.08 Nmm/deg) predicted an 86.8% success rate.
+      Building the hand and testing it in the real world produced an <b>89.8%</b> win rate — within
+      3 percentage points of the simulated prediction, confirming that the simulation-driven
+      stiffness selection carries over to physical hardware.
+    </p>
+
+    <div class="video-compare">
+      <div class="video-stack video-stack--80">
+        <video src="media1/passive.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+        <video src="media1/nonpassive.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+      </div>
+      <figure>
+        <img src="media1/Real_Disc.png" alt="Real-world pull-out force measurement on disc objects, passive versus non-passive hand">
+        <figcaption class="figcaption--body">
+          Real-world experiments were conducted with a push-pull gauge on 90 mm, 100 mm, 110 mm,
+          120 mm and 130 mm disks. The passive hand maintains contact along the pulling direction
+          and therefore withstands a larger force, while the non-passive hand slips and loses the object.
+        </figcaption>
+      </figure>
+    </div>
+
+    <p>
+      The proposed hand was tested against a non-passive configuration on physical objects —
+      discs of five diameters, a baseball, a cylinder, a taped roll, a rectangular box and a
+      juice container — measuring the pull-out force at which each object slipped from the
+      grasp. Each condition ran 8 passive and 8 non-passive trials, cross-compared pairwise.
+    </p>
+
+    <figure class="figure figure--80">
+      <img src="media1/result.png" alt="Bar chart of real-world passive win rate by object and condition, 89.8 percent overall">
+      <figcaption class="figcaption--body">
+        Real-world passive win rate by condition — 575 of 640 pairwise comparisons
+        favoured the passive-ABD hand (89.8% overall).
+      </figcaption>
+    </figure>
+
+    <div class="media-text-split">
+      <div class="videogrid">
+        <div class="videobox">
+          <video src="media1/Baseball.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+          <div class="cap">BaseBall pull demo</div>
+        </div>
+        <div class="videobox">
+          <video src="media1/shake_demo.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+          <div class="cap">The hand adaptively conforms and maintains a stable grasp even under shaking.</div>
+        </div>
+        <div class="videobox">
+          <video src="media1/Lemon.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+          <div class="cap">Lemon juice demo</div>
+        </div>
+        <div class="videobox">
+          <video src="media1/Tape.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+          <div class="cap">Diameter 110mm Tape demo</div>
+        </div>
+      </div>
+
+      <p>
+        Across every object tested, the passive-ABD hand held on where the fixed-joint baseline
+        slipped — confirming that a fully passive degree of freedom, with no added actuation,
+        is enough to meaningfully improve grasp stability.
+      </p>
+    </div>
+
+  </section>
+
+  <section>
+    <h2>Presentation</h2>
+    <div class="quicklinks" style="margin: 14px 0 0;">
+      <a class="chip chip-solid" href="media1/Passive ABD Prosthetic Hand.pdf" download>
+        <svg viewBox="0 0 24 24"><path d="M5 20h14v-2H5v2zM19 9h-4V3H9v6H5l7 7 7-7z"/></svg>
+        Download Slides (PDF)
+      </a>
+    </div>
+    <div class="pdfwrap pdfwrap--80">
+      <object class="pdfframe" data="media1/Passive ABD Prosthetic Hand.pdf" type="application/pdf">
+        <div class="pdffallback">
+          Your browser can't preview this PDF inline — use the download button above.
+        </div>
+      </object>
+    </div>
+  </section>
+
+  <a class="backlink" href="index.html#research">← Back to all projects</a>
+
+</div>
+
+<footer>
+  <div class="wrap f-grid">
+    <div>
+      <div class="f-name">Seihwan Jung</div>
+      <p>Seoul National University</p>
+      <p><a href="mailto:sehwan1234@snu.ac.kr">sehwan1234@snu.ac.kr</a></p>
+    </div>
+    <div class="f-links">
+      <a href="index.html">Home</a>
+      <a href="cv.html">CV</a>
+      <a href="index.html#research">Projects</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

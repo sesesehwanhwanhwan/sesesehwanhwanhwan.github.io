@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ===== SEO — this is what Google shows in search results ===== -->
+<title>Seihwan Jung | Robotic Hands &amp; Compliant Mechanisms, Seoul National University</title>
+<meta name="description" content="Seihwan Jung — Mechanical Engineering undergraduate at Seoul National University, researching at the BioRobotics Laboratory. Passive ABD prosthetic hand, compliant and underactuated grasping mechanisms.">
+<meta name="author" content="Seihwan Jung">
+<link rel="canonical" href="https://sesesehwanhwanhwan.github.io/">
+
+<!-- link preview when shared on KakaoTalk / LinkedIn / Slack -->
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Seihwan Jung | Robotic Hands &amp; Compliant Mechanisms">
+<meta property="og:description" content="Mechanical Engineering undergraduate at Seoul National University, BioRobotics Laboratory. Passive ABD prosthetic hand research.">
+<meta property="og:image" content="https://sesesehwanhwanhwan.github.io/media1/hero_hand.jpg">
+<meta property="og:url" content="https://sesesehwanhwanhwan.github.io/">
+
+<!-- tells Google this page is about a person, so the name search matches -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Seihwan Jung",
+  "alternateName": "정세환",
+  "email": "mailto:sehwan1234@snu.ac.kr",
+  "jobTitle": "Undergraduate Researcher",
+  "affiliation": {
+    "@type": "Organization",
+    "name": "BioRobotics Laboratory, Seoul National University"
+  },
+  "alumniOf": {
+    "@type": "CollegeOrUniversity",
+    "name": "Seoul National University"
+  },
+  "knowsAbout": ["Robotics", "Prosthetic Hands", "Compliant Mechanisms", "Robotic Grasping", "Mechanical Design"],
+  "url": "https://sesesehwanhwanhwan.github.io/"
+}
+</script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ NAVIGATION (identical on every page) ============ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-name" href="index.html">Seihwan Jung</a>
+    <ul class="nav-links">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li class="has-sub">
+        <a href="#research">Projects</a>
+        <ul class="subnav">
+          <li><a href="research-passive-abd-hand.html">Enhancing Grasp Stability in Prosthetic Hands via Passive Finger Abduction/Adduction</a></li>
+          <li><a href="research-imu-teleop-arm.html">Wireless IMU Teleoperation of a Robotic Arm</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============ HERO BANNER ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Hello, I'm Seihwan!</h1>
+      <p>
+        I'm an undergraduate student in <b>Mechanical Engineering at Seoul National
+        University. I design robotic hands and carry
+        them from simulation all the way through to working hardware.
+      </p>
+      <p>
+        From Winter Semester 2026/27 I'll be an exchange student at <b>TU Berlin</b>,
+        where I hope to keep working on robotic manipulation.
+      </p>
+
+      <!-- EDIT: fill in the href="#" links, or delete chips you don't use -->
+      <div class="quicklinks">
+        <a class="chip chip-solid" href="mailto:sehwan1234@snu.ac.kr">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4.4l-8 5-8-5V6l8 5 8-5v2.4z"/></svg>
+          Email
+        </a>
+        <a class="chip" href="cv.html">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+          CV
+        </a>
+        <a class="chip" href="https://github.com/sesesehwanhwanhwan" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.09.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0112 6.8c.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10 10 0 0022 12 10 10 0 0012 2z"/></svg>
+          GitHub
+        </a>
+        <a class="chip" href="https://www.linkedin.com/in/정세환-학생-기계공학부-8b7a923aa" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14M8.6 18.3v-7.7H6v7.7h2.6M7.3 9.4a1.5 1.5 0 100-3 1.5 1.5 0 000 3M18 18.3v-4.2c0-2.2-1.2-3.3-2.8-3.3-1.3 0-1.9.7-2.2 1.2v-1h-2.5v7.7H13v-4.3c0-1.1.2-2.2 1.6-2.2s1.4 1.3 1.4 2.3v4.2H18z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ RESEARCH INTERESTS ============ -->
+<section class="band">
+  <div class="wrap">
+  
+    <h2 class="sec-title">Project Interests</h2>
+    <p class="sec-intro">
+      Hardware & software
+
+    <div class="icards">
+      <div class="icard">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 9V7h-2V5a2 2 0 00-2-2h-2V1h-2v2h-2V1H9v2H7a2 2 0 00-2 2v2H3v2h2v2H3v2h2v2H3v2h2v2a2 2 0 002 2h2v2h2v-2h2v2h2v-2h2a2 2 0 002-2v-2h2v-2h-2v-2h2v-2h-2V9h2M9 9h6v6H9V9z"/></svg></div>
+        <h3>Grasping &amp; Manipulation</h3>
+        <p>Human-level grasping ability.</p>
+      </div>
+      <div class="icard">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <h3>Robotic Hardware Design</h3>
+        <p>Interested in actuators, sensors, and new mechanisms.</p>
+      </div>
+      <div class="icard">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18v-2H5V3H3m4 12h2v-5H7v5m4 0h2V7h-2v8m4 0h2v-3h-2v3z"/></svg></div>
+        <h3>Learning Based Control</h3>
+        <p>Interested in using learning to control robots.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section class="band band--tint" id="research">
+  <div class="wrap">
+
+    <h2 class="sec-title">Projects</h2>
+    <p class="sec-intro">Click through for the full story on any project.</p>
+
+    <div class="works">
+
+      <!-- ---- Work 1: filled in as a worked example ---- -->
+      <article class="work">
+        <div class="work-thumb work-thumb--videos">
+          <video src="media1/Demo.mp4" autoplay muted loop playsinline></video>
+          <video src="media1/passive.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <div class="work-body">
+          <h3>Enhancing Grasp Stability in Prosthetic Hands via Passive Finger Abduction/Adduction</h3>
+          <p>
+            A tendon-driven prosthetic hand with a fully passive abduction degree of freedom,
+            using two opposing torsion springs per finger, dual tendon routing — grasp compliance for improving grasp stability with no
+            extra motors or weight.
+          </p>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <a class="more" href="research-passive-abd-hand.html">More Detail</a>
+            <span style="font-size:12.5px; color:#000;">(Done in my 3rd year of undergrad)</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- ---- Work 2 ---- -->
+      <article class="work">
+        <div class="work-thumb work-thumb--rotvideo">
+          <video src="media2/Teleoperation_IMU.mp4" autoplay muted loop playsinline></video>
+        </div>
+        <div class="work-body">
+          <h3>Wireless IMU Teleoperation of a Robotic Arm</h3>
+          <p>
+            A wearable two-IMU controller that drives a 4-DOF robotic arm in real time over
+            ESP-NOW — subtracting one accelerometer from the other to isolate wrist motion from
+            whole-arm motion, with no kinematic model.
+          </p>
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <a class="more" href="research-imu-teleop-arm.html">More Detail</a>
+            <span style="font-size:12.5px; color:#000;">(Done in my 2nd year of undergrad)</span>
+          </div>
+        </div>
+      </article>
+
+  </div>
+</section>
+
+<!-- ============ EDUCATION & EXPERIENCE ============ -->
+<section class="band">
+  <div class="wrap">
+   
+    <h2 class="sec-title">Education &amp; Experience</h2>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <span class="tl-when">Oct 2026 – Mar 2027</span>
+        <h3>Exchange Student, Technische Universität Berlin</h3>
+        <p class="where">Winter Semester 2026/27 · Berlin, Germany</p>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-when">Jan 2026 – Aug 2026</span>
+        <h3>Undergraduate Researcher, BioRobotics Laboratory (BRL)</h3>
+        <p class="where">Seoul National University </p>
+        <ul>
+          <li>Designed and built a passive-ABD tendon-driven prosthetic hand with dual torsion-spring fingers</li>
+          <li>Used Fusion 360 for CAD, MuJoCo for grasp simulation sweeps, Python for data analysis, and 3D printing for hardware prototypes</li>
+          <li>Validated the design with real-world grasp trials.</li>
+        </ul>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-when">2024 – 2028 (expected)</span>
+        <h3>B.S. in Mechanical Engineering, Seoul National University</h3>
+        <p class="where">Seoul, Republic of Korea</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ AWARDS ============ -->
+<section class="band band--tint band--tight">
+  <div class="wrap">
+
+    <h2 class="sec-title">Awards</h2>
+    <div class="entry">
+      <div class="badge">2nd Place</div>
+      <div>
+        <h3>Creative Engineering Design Robocon</h3>
+        <p>Department of Mechanical Engineering 33rd Anniversary, Seoul National University</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OTHER ACTIVITIES ============ -->
+<section class="band band--tight">
+  <div class="wrap">
+  
+    <h2 class="sec-title">Other Activities</h2>
+    <div class="entry">
+      <div class="badge">Volunteering</div>
+      <div>
+        <h3>Teaching Volunteer Club</h3>
+        <p>Taught English to elementary school students at a local community center</p>
+      </div>
+    </div>
+
+    <div class="entry">
+      <div class="badge">Mentoring</div>
+      <div>
+        <h3>Mathematics Mentor</h3>
+        <p>Subject and extracurricular mentoring for students during summer vacations</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap f-grid">
+    <div>
+      <div class="f-name">Seihwan Jung</div>
+      <p>Seoul National University</p>
+      <p><a href="mailto:sehwan1234@snu.ac.kr">sehwan1234@snu.ac.kr</a></p>
+    </div>
+    <div class="f-links">
+      <a href="index.html">Home</a>
+      <a href="cv.html">CV</a>
+      <a href="#research">Projects</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

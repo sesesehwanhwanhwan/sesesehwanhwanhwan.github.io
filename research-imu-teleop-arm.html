@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Wireless IMU Teleoperation of a Robotic Arm | Seihwan Jung</title>
+<meta name="description" content="A wearable two-IMU controller that drives a 4-DOF robotic arm in real time over ESP-NOW, with sensor differencing to isolate wrist motion and an EMA filter cascade to remove tremor.">
+<link rel="canonical" href="https://sesesehwanhwanhwan.github.io/research-imu-teleop-arm.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Wireless IMU Teleoperation of a Robotic Arm — Seihwan Jung">
+<meta property="og:description" content="A wearable two-IMU controller that drives a 4-DOF robotic arm in real time over ESP-NOW, with sensor differencing to isolate wrist motion and an EMA filter cascade to remove tremor.">
+<meta property="og:image" content="https://sesesehwanhwanhwan.github.io/media2/placeholder.jpg">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-name" href="index.html">Seihwan Jung</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li class="has-sub">
+        <a href="index.html#research" class="active">Projects</a>
+        <ul class="subnav">
+          <li><a href="research-passive-abd-hand.html">Enhancing Grasp Stability in Prosthetic Hands via Passive Finger Abduction/Adduction</a></li>
+          <li><a href="research-imu-teleop-arm.html">Wireless IMU Teleoperation of a Robotic Arm</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<header class="pagehead">
+  <div class="wrap">
+    <h1>Wireless IMU Teleoperation of a Robotic Arm</h1>
+    <p>
+      A wearable two-IMU controller driving a 4-DOF robotic arm over ESP-NOW · Solo project,
+      Introduction to IoT and Engineering Design, Seoul National University · Spring semester, 2nd year
+    </p>
+  </div>
+</header>
+
+<div class="wrap article">
+
+
+
+  <section>
+    <h2>Overview</h2>
+    <p>
+      A wearable motion-capture controller that drives a 4-DOF robotic arm in real time over a
+      wireless link. Two MPU6050 IMUs are strapped to the back of the hand and the forearm; the
+      operator tilts their arm and the robot follows. A potentiometer mounted on a finger linkage
+      opens and closes the gripper.
+    </p>
+  
+    <p>
+      Built end to end: 3D-printed arm, wearable sensor harness, firmware on both ends, wireless
+      protocol, and the signal processing in between.
+    </p>
+    <div class="figrow figrow--2 figrow--56">
+      <figure>
+        <img src="media2/IMU.png" alt="The finished 3D-printed arm and the wearable controller in use">
+      </figure>
+      <figure>
+        <img src="media2/Robot_Arm.png" alt="The 3D-printed robot arm">
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>System Architecture</h2>
+    <p>
+      Two ESP32 nodes talking over <b>ESP-NOW</b>, a connectionless peer-to-peer protocol that
+      needs no router and adds minimal latency — important for teleoperation, where every
+      millisecond of lag is felt directly.
+    </p>
+
+    <figure class="figure figure--80">
+      <img src="media2/System.png" alt="System architecture — controller (dual IMU + potentiometer) talking to the robot arm over ESP-NOW">
+      <figcaption style="text-align:center;">Wiring diagrams for the controller and the robot arm, with the ESP-NOW link between them</figcaption>
+    </figure>
+
+  </section>
+
+  <section>
+    <h2>Hardware</h2>
+    <p>
+      <b>Robot arm</b> — Open source 3D-printed robot arm, five servos(mg 996r, sg90): base rotation, two arm joints, wrist, and
+      gripper. The four arm servos run off a PCA9685 driver at 50 Hz; the gripper servo is
+      driven directly from an ESP32 GPIO.
+    </p>
+    <p>
+      <b>Controller</b> — worn, not held. The ESP32 and forearm IMU strap to the forearm with
+      velcro; a second unit sits on the back of the hand carrying the hand IMU and the gripper
+      potentiometer. Keeping both hands free was the point: the operator's arm <i>is</i> the
+      input device.
+    </p>
+    <div class="figrow figrow--2">
+      <figure>
+        <img src="media2/Robot_Arm_real.png" alt="The 3D-printed robot arm">
+        <figcaption>Robot arm </figcaption>
+      </figure>
+      <figure>
+        <img src="media2/Controller.png" alt="The wearable controller: board, strapped to the forearm, and the hand unit">
+        <figcaption>Controller </figcaption>
+      </figure>
+    </div>
+  </section>
+  <section>
+    <h2>The Coupling Problem</h2>
+    <p>
+      The first working version had a flaw that only appears once you wear it: <b>the robot
+      responded to the wrong motion.</b>
+    </p>
+    <p>
+      An accelerometer strapped to the hand measures the hand's orientation relative to gravity.
+      But that orientation changes both when the wrist bends <i>and</i> when the entire arm
+      moves with the wrist locked. One sensor cannot tell those two cases apart, so lifting the
+      whole arm produced the same command as bending the wrist.
+    </p>
+    <p>
+      The textbook answer is a kinematic model of the arm — link lengths, joint angles, forward
+      kinematics. For a one-semester project on two 8-bit-friendly microcontrollers, that was
+      more machinery than the problem deserved.
+    </p>
+    <p><b>The solution was to subtract one sensor from the other:</b></p>
+
+    <figure class="figure figure--left">
+      <img src="media2/For1.png" alt="Equation: New_Ax1 = Ax1 minus Ax2, New_Ay1 = Ay1 minus Ay2" style="width:24.3%;">
+    </figure>
+
+    <p>
+      This yields the hand's orientation <i>relative to the forearm</i>, which is what a wrist
+      joint physically is:
+    </p>
+
+    <figure class="figure figure--54 figure--left">
+      <img src="media2/For3.png" alt="Table: motion vs. sensor difference — whole-arm motion cancels, wrist motion survives">
+    </figure>
+
+    <p>
+      Whole-arm motion becomes common-mode and cancels; wrist motion survives. The joints that
+      needed to distinguish the two are driven from these difference terms, while the joints
+      meant to follow gross arm orientation read a single sensor directly. Two subtractions
+      replaced a kinematic chain.
+    </p>
+    
+  </section>
+
+  <section>
+    <h2>Noise and Signal Processing</h2>
+    <p>
+      The second problem found in testing: small involuntary hand tremor made the arm visibly
+      shake and jump. The raw accelerometer signal carries the intended motion and the tremor
+      and electrical noise in the same channel, separated only by how fast each one changes.
+    </p>
+    <p>An <b>exponential moving average</b> low-pass filter is applied at both ends of the link:</p>
+
+    <figure class="figure">
+      <img src="media2/For2.png" alt="Equation: transmitter and receiver exponential moving average filters" style="width:40%;margin:0 auto;">
+    </figure>
+
+    <p>
+      Each stage is a first-order LPF costing one multiply-accumulate and one stored
+      float — cheap enough to run inside a 2 ms loop. In cascade:
+    </p>
+
+    <figure class="figure figure--60">
+      <img src="media2/For4.png" alt="Cascaded transfer function H(z) with pole locations, and filter property table">
+    </figure>
+
+    <p>
+      Both poles are real and inside the unit circle, so the arm settles onto a new position
+      without ringing past it — the response is smooth rather than springy. The 14 Hz corner
+      sits above the bandwidth of deliberate arm motion (1–5 Hz) and below the tremor and sensor
+      noise, which is why the shake disappears while the intended motion does not.
+    </p>
+
+    <div class="figrow figrow--2 figrow--80">
+      <figure>
+        <img src="media2/ema_filter_analysis.png" alt="EMA filter characteristics — frequency response, magnitude vs frequency">
+      </figure>
+      <figure>
+        <img src="media2/pole_zero_map.png" alt="EMA filter characteristics — pole-zero map in the z-plane">
+      </figure>
+    </div>
+    <p class="figrow-caption" style="text-align:center; font-size:13.5px; color:var(--ink-3); margin-top:-8px;">Filter characteristics</p>
+
+    <figure class="figure" style="margin-top:26px;">
+      <img src="media2/panel_all.png" alt="Raw vs 2-stage EMA filtered accelerometer signal on each axis (ax, ay, az) over time">
+    </figure>
+    <p class="figrow-caption" style="text-align:center; font-size:13.5px; color:var(--ink-3); margin-top:-8px;">Raw vs. filtered signal on each axis</p>
+
+    <p>
+      The filtered trace (blue) sits right on top of the raw signal (orange) through the slow,
+      large swings — the deliberate arm motion in the 1–5 Hz band is followed almost without lag.
+      Where the raw signal breaks into fast, jagged spikes, the filter rounds them off: the
+      high-frequency tremor and sensor noise are smoothed out while the underlying trajectory
+      is left intact.
+    </p>
+
+    <figure class="figure" style="margin-top:26px;">
+      <img src="media2/panel_quiet.png" alt="Zoomed view of the ax axis over the first 1.6 seconds, raw vs. 2-stage EMA filtered, with the jitter removed" style="width:64%;margin:0 auto;">
+    </figure>
+    <p class="figrow-caption" style="text-align:center; font-size:13.5px; color:var(--ink-3); margin-top:-8px;">Zoom on the first 1.6 s (ax axis)</p>
+
+    <p>
+      Zooming in on just the first 1.6 s of the ax axis makes the effect clear at close range:
+      the raw signal (orange) is covered in a fine sawtooth jitter, while the filtered signal
+      (blue) traces the same path as one continuous line. The slow rises and dips are preserved;
+      only the tremble riding on top is taken out.
+    </p>
+
+
+  </section>
+
+  <section>
+    <h2>Control Mapping</h2>
+    <p>The filtered accelerometer value is mapped linearly onto the servo PWM:</p>
+
+    <div class="eqbox">
+      PWM = map(fx, −15500, 15500, 100, 600) = fx/62 + 350
+    </div>
+
+    <p>
+      Under quasi-static conditions the accelerometer reads the gravity component,
+      <i>a = g·sin θ</i>, so the effective relationship between hand tilt and servo position is
+    </p>
+
+    <div class="eqbox">
+      PWM ≈ 264·sin θ + 350 ≈ 4.6 PWM ticks per degree of hand tilt
+    </div>
+
+    <p>
+      fx is the filtered accelerometer value, and — as we worked out earlier — under
+      slow (quasi-static) motion this value is dominated by the gravity component:
+      fx ≈ 16384·sin θ, where θ is the hand tilt angle. Substituting this into the
+      map equation:
+    </p>
+    <div class="eqbox">
+      PWM = (16384·sin θ)/62 + 350 = 264·sin θ + 350
+    </div>
+
+    <p>
+      Near θ = 0 (small angles), sin θ ≈ θ (in radians), so for a small change in θ:
+    </p>
+    <div class="eqbox">
+      ΔPWM/Δθ (rad) ≈ 264<br>
+      ΔPWM/Δθ (deg) = 264 × (π/180) ≈ 4.6
+    </div>
+
+    <p>
+      In other words: <b>"the servo's PWM value moves by about 4.6 ticks for every 1° the hand
+      tilts."</b> That's the system's sensitivity expressed in degrees
+  </section>
+
+  <section>
+    <h2>Demo</h2>
+    <div class="videobox videobox--rot">
+      <div class="rotframe">
+        <video src="media2/Teleoperation_IMU.mp4" autoplay controls muted loop playsinline preload="metadata"></video>
+      </div>
+      <div class="cap">Object pick &amp; place — wearing two IMU sensors and one potentiometer to teleoperate the robot arm.</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Limitations</h2>
+    <ul class="bullets">
+      <li><b>Power</b> — four AA cells sagged after 1–2 hours and the servos lost torque under load. A LiPo pack is the correct supply for five simultaneously loaded servos.</li>
+      <li><b>Potentiometer mounting</b> — the linkage worked but the electrical connection was fragile and needed to be glued down. A proper mount or a magnetic encoder would be the real fix.</li>
+      <li><b>No true orientation estimate</b> — raw sensor values are mapped straight to servo positions rather than converted to angles, which is why the transfer is nonlinear in sin θ.</li>
+    </ul>
+    
+  </section>
+
+  <a class="backlink" href="index.html#research">← Back to all projects</a>
+
+</div>
+
+<footer>
+  <div class="wrap f-grid">
+    <div>
+      <div class="f-name">Seihwan Jung</div>
+      <p>Seoul National University</p>
+      <p><a href="mailto:sehwan1234@snu.ac.kr">sehwan1234@snu.ac.kr</a></p>
+    </div>
+    <div class="f-links">
+      <a href="index.html">Home</a>
+      <a href="cv.html">CV</a>
+      <a href="index.html#research">Projects</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
